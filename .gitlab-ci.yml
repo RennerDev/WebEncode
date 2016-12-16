@@ -5,8 +5,8 @@
 # See https://maven.apache.org/settings.html
 buils:
   stage: build
- tags:
-   - linux
+  tags:
+  - linux
   script:
     - 'mvn vaadin:compile'
 
