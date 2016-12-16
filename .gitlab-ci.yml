@@ -1,4 +1,3 @@
-
 # For `master` branch run `mvn deploy` automatically.
 # Here you need to decide whether you want to use JDK7 or 8.
 # To get this working you need to define a volume while configuring your gitlab-ci-multi-runner.
@@ -6,6 +5,8 @@
 # See https://maven.apache.org/settings.html
 buils:
   stage: build
+ tags:
+   - linux
   script:
     - 'mvn vaadin:compile'
 
