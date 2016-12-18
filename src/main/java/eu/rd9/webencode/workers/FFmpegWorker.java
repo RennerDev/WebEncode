@@ -34,8 +34,17 @@ public class FFmpegWorker extends Worker {
     public void run() {
         super.run();
         try {
-            FFmpeg ffmpeg = new FFmpeg(Config.getInstance().getSetting(Settings.FFMPEG_PATH) + "/bin/ffmpeg.exe");
-            FFprobe ffprobe = new FFprobe(Config.getInstance().getSetting(Settings.FFMPEG_PATH) + "/bin/ffprobe.exe");
+
+            File ffmpegFile = new File(Config.getInstance().getSetting(Settings.FFMPEG_PATH) + "/bin/ffmpeg.exe");
+            if ( !ffmpegFile.exists() || !ffmpegFile.isFile())
+                return;
+
+            File ffprobeFile = new File(Config.getInstance().getSetting(Settings.FFMPEG_PATH) + "/bin/ffprobe.exe");
+            if ( !ffprobeFile.exists() || !ffprobeFile.isFile())
+                return;
+
+            FFmpeg ffmpeg = new FFmpeg(ffmpegFile.getAbsolutePath());
+            FFprobe ffprobe = new FFprobe(ffprobeFile.getAbsolutePath());
             FFmpegExecutor executor = new FFmpegExecutor(ffmpeg);
             FFmpegProbeResult probeResult = ffprobe.probe(this.inputFile.getAbsolutePath());
 
