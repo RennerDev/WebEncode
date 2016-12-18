@@ -32,7 +32,7 @@ public class FFmpegWorker extends Worker {
 
     @Override
     public void run() {
-
+        super.run();
         try {
             FFmpeg ffmpeg = new FFmpeg(Config.getInstance().getSetting(Settings.FFMPEG_PATH) + "/bin/ffmpeg.exe");
             FFprobe ffprobe = new FFprobe(Config.getInstance().getSetting(Settings.FFMPEG_PATH) + "/bin/ffprobe.exe");

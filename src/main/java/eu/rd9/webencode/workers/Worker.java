@@ -5,11 +5,11 @@ package eu.rd9.webencode.workers;
  */
 public class Worker implements Runnable {
 
-    public WorkerState state = WorkerState.RUNNING;
+    public WorkerState state = WorkerState.WAITING;
 
     @Override
     public void run() {
-
+        state = WorkerState.RUNNING;
     }
 
     @Override

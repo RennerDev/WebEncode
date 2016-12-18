@@ -21,9 +21,7 @@ public class Config {
         try {
             this.properties.load(new FileInputStream(Constants.CONFIG_FILE_NAME));
         } catch (IOException e) {
-
             this.loadDefaultValues();
-
         }
 
     }
