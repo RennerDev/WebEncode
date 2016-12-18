@@ -342,13 +342,13 @@ public class WebEncodeUI extends UI {
         watchFolderGrid.setRows(watchFolderGrid.getRows() + 1);
 
         Table watchFolderContentTable = new Table();
-        watchFolderContentTable.setWidth("25%");
-        watchFolderContentTable.setHeight("25%");
+        watchFolderContentTable.setWidth("50%");
+        watchFolderContentTable.setHeight("100%");
         watchFolderContentTable.addContainerProperty("Files", String.class, null);
 
         Table watchFolderTable = new Table();
-        watchFolderTable.setWidth("75%");
-        watchFolderTable.setHeight("75%");
+        watchFolderTable.setWidth("50%");
+        watchFolderTable.setHeight("100%");
         watchFolderTable.addContainerProperty("Folder", String.class, null);
         watchFolderTable.setSelectable(true);
         watchFolderTable.setImmediate(true);

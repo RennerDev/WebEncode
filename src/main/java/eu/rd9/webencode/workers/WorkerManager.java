@@ -1,5 +1,7 @@
 package eu.rd9.webencode.workers;
 
+import eu.rd9.webencode.config.Config;
+import eu.rd9.webencode.config.Settings;
 import eu.rd9.webencode.data.Rule;
 import eu.rd9.webencode.page.WebEncodeUI;
 import eu.rd9.webencode.services.RulesService;
@@ -19,7 +21,7 @@ public class WorkerManager extends Thread {
     private ExecutorService executor;
     private List<Worker> workerList = new ArrayList<>();
     public WorkerManager() {
-        this.executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        this.executor = Executors.newFixedThreadPool(Integer.parseInt(Config.getInstance().getSetting(Settings.THREAD_COUNT)));
     }
 
     public WorkerManager(int tCount) {
