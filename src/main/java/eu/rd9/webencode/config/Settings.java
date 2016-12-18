@@ -12,7 +12,7 @@ public enum Settings {
     MYSQL_PASSWORD("MySQL-Password", "mysql.password", ""),
     FFMPEG_PATH("FFmpeg-Path", "ffmpeg.path", ""),
     CONVERTED_FILES_OUTPUT_PATH("Output Path for converted files", "converted.output.path", ""),
-    THREAD_COUNT("Thread Count", "thread.count", "" + Runtime.getRuntime().availableProcessors());
+    THREAD_COUNT("Thread Count (default value based on your cpu count)", "thread.count", "" + Runtime.getRuntime().availableProcessors());
 
     private String settingName;
     private String propName;

@@ -77,7 +77,7 @@ public class FFmpegWorker extends Worker {
                     );
                     System.out.println(val);
 
-                    if (instance.percentage == 100) {
+                    if (Math.round(instance.percentage) == 100) {
                         state = WorkerState.FINISHED;
                     }
                 }
