@@ -2,14 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5289846e-4e92-4c10-91fa-305996f07555" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_code_gson_gson_2_8_0.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_guava_guava_20_0.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__commons_io_commons_io_2_5.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__net_bramp_ffmpeg_ffmpeg_0_6_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_commons_commons_lang3_3_5.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_modelmapper_modelmapper_0_7_7.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_slf4j_slf4j_api_1_7_21.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/eu/rd9/webencode/services/RulesService.java" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/eu/rd9/webencode/page/WebEncodeUI$NewWorkerSub.class" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/eu/rd9/webencode/config/Settings.class" afterPath="$PROJECT_DIR$/target/classes/eu/rd9/webencode/config/Settings.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/eu/rd9/webencode/data/Preset.class" afterPath="$PROJECT_DIR$/target/classes/eu/rd9/webencode/data/Preset.class" />
@@ -21,19 +13,6 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/eu/rd9/webencode/workers/FFmpegWorker.class" afterPath="$PROJECT_DIR$/target/classes/eu/rd9/webencode/workers/FFmpegWorker.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/eu/rd9/webencode/workers/WorkerManager.class" afterPath="$PROJECT_DIR$/target/classes/eu/rd9/webencode/workers/WorkerManager.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/eu/rd9/webencode/workers/WorkerState.class" afterPath="$PROJECT_DIR$/target/classes/eu/rd9/webencode/workers/WorkerState.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/WebEncode.iml" afterPath="$PROJECT_DIR$/.idea/WebEncode.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/config.prop" afterPath="$PROJECT_DIR$/config.prop" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pom.xml" afterPath="$PROJECT_DIR$/pom.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/eu/rd9/webencode/config/Settings.java" afterPath="$PROJECT_DIR$/src/main/java/eu/rd9/webencode/config/Settings.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/eu/rd9/webencode/data/Preset.java" afterPath="$PROJECT_DIR$/src/main/java/eu/rd9/webencode/data/Preset.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/eu/rd9/webencode/page/WebEncodeUI.java" afterPath="$PROJECT_DIR$/src/main/java/eu/rd9/webencode/page/WebEncodeUI.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/eu/rd9/webencode/page/WebEncodeUIServlet.java" afterPath="$PROJECT_DIR$/src/main/java/eu/rd9/webencode/page/WebEncodeUIServlet.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/eu/rd9/webencode/services/DatabaseService.java" afterPath="$PROJECT_DIR$/src/main/java/eu/rd9/webencode/services/DatabaseService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/eu/rd9/webencode/services/WatchFolderService.java" afterPath="$PROJECT_DIR$/src/main/java/eu/rd9/webencode/services/WatchFolderService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/eu/rd9/webencode/workers/FFmpegWorker.java" afterPath="$PROJECT_DIR$/src/main/java/eu/rd9/webencode/workers/FFmpegWorker.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/eu/rd9/webencode/workers/WorkerManager.java" afterPath="$PROJECT_DIR$/src/main/java/eu/rd9/webencode/workers/WorkerManager.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/eu/rd9/webencode/workers/WorkerState.java" afterPath="$PROJECT_DIR$/src/main/java/eu/rd9/webencode/workers/WorkerState.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" />
     </list>
@@ -912,7 +891,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-11" y="-11" width="3862" height="2122" extended-state="6" />
+    <frame x="-11" y="-11" width="3862" height="2122" extended-state="7" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
