@@ -34,7 +34,6 @@ public class FFmpegWorker extends Worker {
 
     @Override
     public void run() {
-        super.run();
         try {
 
             File ffmpegFile = new File(Config.getInstance().getSetting(Settings.FFMPEG_PATH) + "/bin/ffmpeg.exe");
@@ -54,6 +53,7 @@ public class FFmpegWorker extends Worker {
                 }
             }
 
+            super.run();
 
             FFmpeg ffmpeg = new FFmpeg(ffmpegFile.getAbsolutePath());
             FFprobe ffprobe = new FFprobe(ffprobeFile.getAbsolutePath());
