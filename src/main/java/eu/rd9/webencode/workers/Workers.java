@@ -15,6 +15,15 @@ public enum Workers {
         this.workerName = workerName;
     }
 
+    public static Workers getWorker(Class aClass) {
+        for (Workers worker : Workers.values()) {
+            if (worker.aClass.equals(aClass))
+                return worker;
+        }
+
+        return Workers.FFMPEG;
+    }
+
     public Worker getWorker() {
         try {
             return (Worker) this.aClass.newInstance();
@@ -28,14 +37,5 @@ public enum Workers {
 
     public String getWorkerName() {
         return this.workerName;
-    }
-
-    public static Workers getWorker(Class aClass) {
-        for (Workers worker : Workers.values()) {
-            if (worker.aClass.equals(aClass))
-                return worker;
-        }
-
-        return Workers.FFMPEG;
     }
 }

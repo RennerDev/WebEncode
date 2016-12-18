@@ -15,6 +15,12 @@ import java.util.List;
 public class DatabaseService {
 
     private static DatabaseService databaseService = null;
+    private String connectionStr;
+    private Connection connection = null;
+    public DatabaseService(String server, String port, String database, String username, String password) {
+        this.connectionStr = "jdbc:mysql://" + server + ":" + port + "/" + database + "?" + "user=" + username + "&password=" + password + "&serverTimezone=UTC";
+        this.connect();
+    }
 
     public static DatabaseService getInstance() {
         Config config = Config.getInstance();
@@ -26,14 +32,6 @@ public class DatabaseService {
                     config.getSetting(Settings.MYSQL_PASSWORD));
 
         return databaseService;
-    }
-
-    private String connectionStr;
-    private Connection connection = null;
-
-    public DatabaseService(String server, String port, String database, String username, String password) {
-        this.connectionStr = "jdbc:mysql://" + server + ":" + port + "/" + database + "?" + "user=" + username + "&password=" + password + "&serverTimezone=UTC";
-        this.connect();
     }
 
     public void connect() {
@@ -50,10 +48,11 @@ public class DatabaseService {
 
         try {
             Statement statement = this.connection.createStatement();
-            ResultSet rs = statement.executeQuery("SELECT name, ffmpegParams FROM presets");
+            ResultSet rs = statement.executeQuery("SELECT id,name, ffmpegParams FROM presets");
             while (rs.next()) {
 
                 Preset preset = new Preset();
+                preset.setUuid(rs.getString("id"));
                 preset.Preset_Name = rs.getString("name");
                 preset.FFmpeg_Parameters = rs.getString("ffmpegParams");
                 presets.add(preset);
@@ -68,8 +67,6 @@ public class DatabaseService {
     }
 
     public void addWatchFolder(String path) {
-        List<String> result = new ArrayList<>();
-
         try {
             PreparedStatement preparedStatement = this.connection.prepareStatement("INSERT INTO watch_folders (path) VALUES (?);");
             preparedStatement.setString(1, path);
@@ -103,14 +100,16 @@ public class DatabaseService {
 
         try {
             Statement statement = this.connection.createStatement();
-            ResultSet rs = statement.executeQuery("SELECT r.name AS rName, r.wildcard AS rWildCard, p.name AS pName, p.ffmpegParams AS ffmpeg FROM rules r JOIN presets p ON r.preset = p.id");
+            ResultSet rs = statement.executeQuery("SELECT r.id AS rId , r.name AS rName, r.wildcard AS rWildCard, p.id AS pId, p.name AS pName, p.ffmpegParams AS ffmpeg FROM rules r JOIN presets p ON r.preset = p.id");
             while (rs.next()) {
 
                 Preset preset = new Preset();
+                preset.setUuid(rs.getString("pId"));
                 preset.Preset_Name = rs.getString("pName");
                 preset.FFmpeg_Parameters = rs.getString("ffmpeg");
 
                 Rule rule = new Rule();
+                rule.setUuid(rs.getString("rId"));
                 rule.Rule_Name = rs.getString("rName");
                 rule.Wirldcard = rs.getString("rWildCard");
                 rule.Preset = preset;
@@ -126,4 +125,90 @@ public class DatabaseService {
         return presets;
     }
 
+    public void removeWatchFolder(String watchFolderPath) {
+        try {
+            PreparedStatement preparedStatement = this.connection.prepareStatement("DELETE FROM watch_folders WHERE path = ?;");
+            preparedStatement.setString(1, watchFolderPath);
+            preparedStatement.execute();
+            preparedStatement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addRule(Rule rule) {
+        try {
+            PreparedStatement preparedStatement = this.connection.prepareStatement("INSERT INTO rules (id,name,wildcard,preset) VALUES (?,?,?,?);");
+            preparedStatement.setString(1, rule.getUUIDStr());
+            preparedStatement.setString(2, rule.Rule_Name);
+            preparedStatement.setString(3, rule.Wirldcard);
+            preparedStatement.setString(4, rule.Preset.getUUIDStr());
+            preparedStatement.execute();
+            preparedStatement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void removeRule(Rule rule) {
+        try {
+            PreparedStatement preparedStatement = this.connection.prepareStatement("DELETE FROM rules WHERE id = ?;");
+            preparedStatement.setString(1, rule.getUUIDStr());
+            preparedStatement.execute();
+            preparedStatement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addPreset(Preset preset) {
+        try {
+            PreparedStatement preparedStatement = this.connection.prepareStatement("INSERT INTO presets (id,name,ffmpegParams) VALUES (?,?,?);");
+            preparedStatement.setString(1, preset.getUUIDStr());
+            preparedStatement.setString(2, preset.Preset_Name);
+            preparedStatement.setString(3, preset.FFmpeg_Parameters);
+            preparedStatement.execute();
+            preparedStatement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void removePreset(Preset preset) {
+        try {
+            PreparedStatement preparedStatement = this.connection.prepareStatement("DELETE FROM presets WHERE id = ?;");
+            preparedStatement.setString(1, preset.getUUIDStr());
+            preparedStatement.execute();
+            preparedStatement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateRule(Rule rule) {
+        try {
+            PreparedStatement preparedStatement = this.connection.prepareStatement("UPDATE rules SET name = ?, wildcard = ?, preset = ? WHERE id = ?;");
+            preparedStatement.setString(1, rule.Rule_Name);
+            preparedStatement.setString(2, rule.Wirldcard);
+            preparedStatement.setString(3, rule.Preset.getUUIDStr());
+            preparedStatement.setString(4, rule.getUUIDStr());
+            preparedStatement.execute();
+            preparedStatement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updatePreset(Preset preset) {
+        try {
+            PreparedStatement preparedStatement = this.connection.prepareStatement("UPDATE presets SET name = ?, ffmpegParams = ? WHERE id = ?;");
+            preparedStatement.setString(1, preset.Preset_Name);
+            preparedStatement.setString(2, preset.FFmpeg_Parameters);
+            preparedStatement.setString(3, preset.getUUIDStr());
+            preparedStatement.execute();
+            preparedStatement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

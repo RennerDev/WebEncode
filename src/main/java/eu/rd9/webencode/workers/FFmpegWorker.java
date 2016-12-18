@@ -11,6 +11,7 @@ import net.bramp.ffmpeg.probe.FFmpegProbeResult;
 import net.bramp.ffmpeg.progress.Progress;
 import net.bramp.ffmpeg.progress.ProgressListener;
 
+import javax.management.Notification;
 import java.io.File;
 import java.io.IOException;
 
@@ -41,17 +42,19 @@ public class FFmpegWorker extends Worker {
             FFmpegBuilder builder = this.preset.getFFpegBuilder(this.inputFile);
             executor.createJob(builder, new ProgressListener() {
                 final double duration_us = probeResult.getFormat().duration * 1000000.0;
+
                 @Override
                 public void progress(Progress progress) {
                     double percentage = progress.out_time_ms / duration_us;
                     instance.percentage = percentage * 100;
-                    System.out.println(String.format("[%.0f%%] frame:%d time:%d ms fps:%.0f speed:%.2fx",
+                    String val = String.format("[%.0f%%] frame:%d time:%d ms fps:%.0f speed:%.2fx",
                             instance.percentage,
                             progress.frame,
                             progress.out_time_ms,
                             progress.fps.doubleValue(),
                             progress.speed
-                    ));
+                    );
+                    System.out.println(val);
 
                     if (instance.percentage == 100) {
                         state = WorkerState.FINISHED;
@@ -65,8 +68,7 @@ public class FFmpegWorker extends Worker {
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return Workers.getWorker(this.getClass()).getWorkerName() + " (File: " + this.inputFile.getName() + ", " + Math.round(this.percentage) + "%)";
     }
 

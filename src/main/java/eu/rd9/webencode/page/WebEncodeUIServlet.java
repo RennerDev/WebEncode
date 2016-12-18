@@ -27,8 +27,7 @@ public class WebEncodeUIServlet extends VaadinServlet {
         WorkerManager workerManager = new WorkerManager();
         workerManager.start();
 
-        for ( String path : DatabaseService.getInstance().getWatchFolders())
-        {
+        for (String path : DatabaseService.getInstance().getWatchFolders()) {
             WebEncodeUI.watchFolderServices.put(path, new WatchFolderService(path));
         }
 

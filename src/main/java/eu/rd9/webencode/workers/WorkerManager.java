@@ -1,6 +1,7 @@
 package eu.rd9.webencode.workers;
 
 import eu.rd9.webencode.data.Rule;
+import eu.rd9.webencode.page.WebEncodeUI;
 import eu.rd9.webencode.services.RulesService;
 
 import java.io.File;
@@ -12,13 +13,21 @@ import java.util.concurrent.Executors;
 /**
  * Created by renne on 16.12.2016.
  */
-public class WorkerManager extends Thread{
+public class WorkerManager extends Thread {
 
     private static WorkerManager workerManager = null;
-    public static WorkerManager getInstance()
-    {
-        if ( workerManager == null)
-        {
+    private ExecutorService executor;
+    private List<Worker> workerList = new ArrayList<>();
+    public WorkerManager() {
+        this.executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+    }
+
+    public WorkerManager(int tCount) {
+        this.executor = Executors.newFixedThreadPool(tCount);
+    }
+
+    public static WorkerManager getInstance() {
+        if (workerManager == null) {
             workerManager = new WorkerManager();
             workerManager.start();
         }
@@ -26,39 +35,22 @@ public class WorkerManager extends Thread{
         return workerManager;
     }
 
-
-
-    private ExecutorService executor;
-    private List<Worker> workerList = new ArrayList<>();
-
-    public WorkerManager()
-    {
-        this.executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-    }
-
-    public WorkerManager(int tCount)
-    {
-        this.executor = Executors.newFixedThreadPool(tCount);
-    }
-
-    public void run ()
-    {
+    public void run() {
 
     }
 
-    public void startWorker (Worker worker)
-    {
+    public void startWorker(Worker worker) {
         this.workerList.add(worker);
         this.executor.submit(worker);
     }
 
-    public List<Worker> getWorkers()
-    {
+    public List<Worker> getWorkers() {
         return this.workerList;
     }
 
     public void doWork(File file) {
         Rule rule = RulesService.getInstance().getRuleForFile(file.getName());
-        this.startWorker(new FFmpegWorker(rule.Preset, file));
+        Worker worker = new FFmpegWorker(rule.Preset, file);
+        this.startWorker(worker);
     }
 }

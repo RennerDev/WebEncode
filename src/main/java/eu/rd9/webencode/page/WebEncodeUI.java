@@ -1,7 +1,6 @@
 package eu.rd9.webencode.page;
 
 import com.vaadin.annotations.Theme;
-import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.server.Page;
 import com.vaadin.server.VaadinRequest;
@@ -16,7 +15,6 @@ import eu.rd9.webencode.workers.Worker;
 import eu.rd9.webencode.workers.WorkerManager;
 import eu.rd9.webencode.workers.WorkerState;
 
-import java.io.File;
 import java.util.*;
 
 /**
@@ -28,14 +26,12 @@ import java.util.*;
  */
 @Theme("valo")
 public class WebEncodeUI extends UI {
-
     public static Map<String, WatchFolderService> watchFolderServices = new HashMap<>();
     public Config config;
 
     @Override
     protected void init(VaadinRequest vaadinRequest) {
         // Create the content root layout for the UI
-
         this.config = Config.getInstance();
 
         VerticalLayout content = new VerticalLayout();
@@ -146,9 +142,10 @@ public class WebEncodeUI extends UI {
         rulesTable.addValueChangeListener((Property.ValueChangeListener) event -> {
 
             verticalLayout.removeAllComponents();
-
+            Map<java.lang.reflect.Field, TextField> textFieldMap = new HashMap<>();
             for (java.lang.reflect.Field field : Rule.class.getFields()) {
                 TextField textField = new TextField(field.getName().replace("_", " "));
+                textFieldMap.put(field, textField);
                 try {
                     String val = field.get(rulesTable.getValue()).toString();
                     textField.setValue(val.toString());
@@ -158,7 +155,64 @@ public class WebEncodeUI extends UI {
 
                 verticalLayout.addComponent(textField);
             }
+
+            HorizontalLayout horizontalLayout = new HorizontalLayout();
+            verticalLayout.addComponent(horizontalLayout);
+
+            Button saveBtn = new Button("Save");
+            saveBtn.addClickListener(event1 -> {
+                if ( rulesTable.getValue() == null )
+                    return;
+
+                for (java.lang.reflect.Field field : Rule.class.getFields()) {
+                    try {
+                        field.set(rulesTable.getValue(), textFieldMap.get(field).getValue());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                DatabaseService.getInstance().updateRule((Rule) rulesTable.getValue());
+            });
+            horizontalLayout.addComponent(saveBtn);
+
+            Button resetBtn = new Button("Reset");
+            resetBtn.addClickListener(event1 -> {
+                for (java.lang.reflect.Field field : Preset.class.getFields()) {
+                    try {
+                        String val = field.get(rulesTable.getValue()).toString();
+                        textFieldMap.get(field).setValue(val.toString());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            horizontalLayout.addComponent(resetBtn);
         });
+
+
+        Button addFolderBtn = new Button("Add Rule");
+        addFolderBtn.addClickListener(clickEvent -> {
+            NewRuleSub sub = new NewRuleSub();
+
+            // Add it to the root component
+            UI.getCurrent().addWindow(sub);
+        });
+
+        Button removeRuleBtn = new Button("Remove Rule");
+        removeRuleBtn.addClickListener(clickEvent -> {
+            Rule rule = (Rule) rulesTable.getValue();
+            if (rule != null) {
+                DatabaseService.getInstance().removeRule(rule);
+                Page.getCurrent().reload();
+            }
+        });
+
+        HorizontalLayout horizontalLayout = new HorizontalLayout();
+        horizontalLayout.addComponent(addFolderBtn);
+        horizontalLayout.addComponent(removeRuleBtn);
+        rulesGrid.setRows(rulesGrid.getRows() + 1);
+        rulesGrid.addComponent(horizontalLayout);
+
 
     }
 
@@ -183,35 +237,92 @@ public class WebEncodeUI extends UI {
 
 
         presetTable.addValueChangeListener((Property.ValueChangeListener) event -> {
-
             verticalLayout.removeAllComponents();
 
+            Map<java.lang.reflect.Field, TextField> textFieldMap = new HashMap<>();
             for (java.lang.reflect.Field field : Preset.class.getFields()) {
                 TextField textField = new TextField(field.getName().replace("_", " "));
+                textFieldMap.put(field, textField);
                 try {
                     String val = field.get(presetTable.getValue()).toString();
                     textField.setValue(val.toString());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
                 verticalLayout.addComponent(textField);
             }
+
+            HorizontalLayout horizontalLayout = new HorizontalLayout();
+            verticalLayout.addComponent(horizontalLayout);
+
+            Button saveBtn = new Button("Save");
+            saveBtn.addClickListener(event1 -> {
+                if ( presetTable.getValue() == null )
+                    return;
+
+                for (java.lang.reflect.Field field : Preset.class.getFields()) {
+                    try {
+                        field.set(presetTable.getValue(), textFieldMap.get(field).getValue());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                DatabaseService.getInstance().updatePreset((Preset) presetTable.getValue());
+            });
+            horizontalLayout.addComponent(saveBtn);
+
+            Button resetBtn = new Button("Reset");
+            resetBtn.addClickListener(event1 -> {
+                for (java.lang.reflect.Field field : Preset.class.getFields()) {
+                    try {
+                        String val = field.get(presetTable.getValue()).toString();
+                        textFieldMap.get(field).setValue(val.toString());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            horizontalLayout.addComponent(resetBtn);
         });
+
+
+        presetsGrid.setRows(presetsGrid.getRows() + 1);
+        Button addFolderBtn = new Button("Add Preset");
+        addFolderBtn.addClickListener(clickEvent -> {
+            NewPresetSub sub = new NewPresetSub();
+
+            // Add it to the root component
+            UI.getCurrent().addWindow(sub);
+        });
+
+        Button removePresetBtn = new Button("Remove Preset");
+        removePresetBtn.addClickListener(clickEvent -> {
+            Preset preset = (Preset) presetTable.getValue();
+            if (preset != null) {
+                DatabaseService.getInstance().removePreset(preset);
+                Page.getCurrent().reload();
+            }
+        });
+
+        HorizontalLayout horizontalLayout = new HorizontalLayout();
+        horizontalLayout.addComponent(addFolderBtn);
+        horizontalLayout.addComponent(removePresetBtn);
+        presetsGrid.addComponent(horizontalLayout);
 
 
     }
 
     private void setupWorkers(GridLayout workersGrid) {
-        Table workersTable = new Table();
-        workersTable.setWidth("25%");
-        workersTable.setHeight("25%");
+        final Table workersTable = new Table();
+        workersTable.setWidth("100%");
+        workersTable.setHeight("100%");
         workersTable.addContainerProperty("Worker", Worker.class, null);
         workersTable.addContainerProperty("State", WorkerState.class, null);
         workersGrid.addComponent(workersTable, 0, 0);
 
+
         workersTable.markAsDirty();
-        new Timer().scheduleAtFixedRate(new TimerTask() {
+        this.access(() -> new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 workersTable.clear();
@@ -219,9 +330,8 @@ public class WebEncodeUI extends UI {
                     workersTable.addItem(new Object[]{worker, worker.state}, worker);
                 }
                 workersTable.refreshRowCache();
-
             }
-        }, 1000, 1000);
+        }, 1000, 1000));
 
 
     }
@@ -277,6 +387,7 @@ public class WebEncodeUI extends UI {
             if (watchFolderService != null) {
                 watchFolderService.wStop();
                 WebEncodeUI.watchFolderServices.remove(watchFolderService.getWatchFolderPath(), watchFolderService);
+                DatabaseService.getInstance().removeWatchFolder(watchFolderService.getWatchFolderPath());
                 Page.getCurrent().reload();
             }
         });
@@ -285,95 +396,6 @@ public class WebEncodeUI extends UI {
         horizontalLayout.addComponent(addFolderBtn);
         horizontalLayout.addComponent(removeWatchFolderBtn);
         watchFolderGrid.addComponent(horizontalLayout);
-    }
-
-    class NewWatchFolderSub extends Window {
-        public NewWatchFolderSub() {
-            super("Select folder to watch"); // Set window caption
-            center();
-
-            // Some basic content for the window
-            VerticalLayout content = new VerticalLayout();
-            content.setMargin(true);
-            setContent(content);
-
-            // Disable the close button
-            setClosable(false);
-
-            Tree tree = new Tree();
-            content.addComponent(tree);
-            createRootFolderTree(tree, File.listRoots(), null);
-
-            TextField textField = new TextField();
-            content.addComponent(textField);
-
-            tree.addValueChangeListener(e -> {
-
-                String value = "";
-                try {
-                    value = tree.getParent(tree.getValue()).toString() + "\\" + e.getProperty().getValue() + "\\";
-                } catch (Exception ex) {
-                    value = tree.getValue().toString();
-                }
-                Notification.show("Value changed:",
-                        value,
-                        Notification.Type.TRAY_NOTIFICATION);
-
-                textField.setValue(value);
-            });
-
-
-            HorizontalLayout horizontalLayout = new HorizontalLayout();
-            content.addComponent(horizontalLayout);
-
-            Button addBtn = new Button("Add");
-            addBtn.addClickListener((Button.ClickListener) event -> {
-                String value = textField.getValue();
-                DatabaseService.getInstance().addWatchFolder(value);
-                WatchFolderService watchFolderService = new WatchFolderService(value);
-                WebEncodeUI.watchFolderServices.put(value, watchFolderService);
-                close();
-                Page.getCurrent().reload();
-            });
-
-            Button closeBtn = new Button("Close");
-            closeBtn.addClickListener((Button.ClickListener) event -> {
-                close(); // Close the sub-window
-            });
-
-            horizontalLayout.addComponent(addBtn);
-            horizontalLayout.addComponent(closeBtn);
-        }
-
-        private void createRootFolderTree(Tree tree, File[] paths, Object lastRoot) {
-            for (File path : paths) {
-
-                if (!path.isDirectory() || !path.canRead())
-                    continue;
-
-                Item pathItem = tree.addItem(path);
-
-                if (lastRoot != null)
-                    tree.setParent(path, lastRoot);
-
-                String[] subPaths = path.list((current, name) -> new File(current, name).isDirectory());
-                if (subPaths == null || subPaths.length == 0) {
-                    tree.setChildrenAllowed(path, false);
-                    continue;
-                }
-
-                List<File> subPathes = new ArrayList<>();
-                for (String subPath : subPaths) {
-                    File f = new File(path + "/" + subPath);
-                    if (!f.isDirectory() || !f.canRead())
-                        continue;
-                    subPathes.add(f);
-                }
-
-                //createRootFolderTree(tree, subPathes.toArray(new File[subPathes.size()]), path);
-
-            }
-        }
     }
 
 }

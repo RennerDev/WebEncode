@@ -13,8 +13,7 @@ public class Worker implements Runnable {
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return Workers.getWorker(this.getClass()).getWorkerName();
     }
 }
