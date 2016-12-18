@@ -4,6 +4,6 @@ mysql.password=
 mysql.port=3306
 ffmpeg.path=D\:\\FFmpeg
 mysql.username=root
-mysql.server=localhost
+mysql.server=192.168.178.33
 converted.output.path=D\:\\test_converted
 mysql.db=web_encode

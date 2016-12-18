@@ -3,8 +3,11 @@ package eu.rd9.webencode.services;
 import eu.rd9.webencode.config.Config;
 import eu.rd9.webencode.config.Settings;
 import eu.rd9.webencode.data.Preset;
+import eu.rd9.webencode.data.PresetParameter;
 import eu.rd9.webencode.data.Rule;
+import eu.rd9.webencode.util.ObjectHelper;
 
+import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +57,14 @@ public class DatabaseService {
                 Preset preset = new Preset();
                 preset.setUuid(rs.getString("id"));
                 preset.Preset_Name = rs.getString("name");
-                preset.FFmpeg_Parameters = rs.getString("ffmpegParams");
+
+                try {
+                    preset.presetParameter = (PresetParameter) ObjectHelper.fromString(rs.getString("ffmpegParams"));
+                } catch (Exception e)
+                {
+                    preset.presetParameter = new PresetParameter();
+                }
+
                 presets.add(preset);
 
             }
@@ -106,7 +116,12 @@ public class DatabaseService {
                 Preset preset = new Preset();
                 preset.setUuid(rs.getString("pId"));
                 preset.Preset_Name = rs.getString("pName");
-                preset.FFmpeg_Parameters = rs.getString("ffmpeg");
+                try {
+                    preset.presetParameter = (PresetParameter) ObjectHelper.fromString(rs.getString("ffmpegParams"));
+                } catch (Exception e)
+                {
+                    preset.presetParameter = new PresetParameter();
+                }
 
                 Rule rule = new Rule();
                 rule.setUuid(rs.getString("rId"));
@@ -166,8 +181,12 @@ public class DatabaseService {
             PreparedStatement preparedStatement = this.connection.prepareStatement("INSERT INTO presets (id,name,ffmpegParams) VALUES (?,?,?);");
             preparedStatement.setString(1, preset.getUUIDStr());
             preparedStatement.setString(2, preset.Preset_Name);
-            preparedStatement.setString(3, preset.FFmpeg_Parameters);
-            preparedStatement.execute();
+            try {
+                preparedStatement.setString(3, ObjectHelper.toString(preset.presetParameter));
+            } catch (IOException e) {
+                preparedStatement.setString(3, "");
+            }
+        preparedStatement.execute();
             preparedStatement.close();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -203,7 +222,11 @@ public class DatabaseService {
         try {
             PreparedStatement preparedStatement = this.connection.prepareStatement("UPDATE presets SET name = ?, ffmpegParams = ? WHERE id = ?;");
             preparedStatement.setString(1, preset.Preset_Name);
-            preparedStatement.setString(2, preset.FFmpeg_Parameters);
+            try {
+                preparedStatement.setString(2, ObjectHelper.toString(preset.presetParameter));
+            } catch (IOException e) {
+                preparedStatement.setString(2, "");
+            }
             preparedStatement.setString(3, preset.getUUIDStr());
             preparedStatement.execute();
             preparedStatement.close();

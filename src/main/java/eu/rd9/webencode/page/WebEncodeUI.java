@@ -1,6 +1,8 @@
 package eu.rd9.webencode.page;
 
 import com.vaadin.annotations.Theme;
+import com.vaadin.data.Container;
+import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.server.Page;
 import com.vaadin.server.VaadinRequest;
@@ -8,6 +10,7 @@ import com.vaadin.ui.*;
 import eu.rd9.webencode.config.Config;
 import eu.rd9.webencode.config.Settings;
 import eu.rd9.webencode.data.Preset;
+import eu.rd9.webencode.data.PresetOption;
 import eu.rd9.webencode.data.Rule;
 import eu.rd9.webencode.services.DatabaseService;
 import eu.rd9.webencode.services.WatchFolderService;
@@ -15,6 +18,7 @@ import eu.rd9.webencode.workers.Worker;
 import eu.rd9.webencode.workers.WorkerManager;
 import eu.rd9.webencode.workers.WorkerState;
 
+import javax.xml.soap.Text;
 import java.util.*;
 
 /**
@@ -81,12 +85,12 @@ public class WebEncodeUI extends UI {
         settingsGrid.setRows(settingsGrid.getRows() + Settings.values().length);
         for (Settings setting : Settings.values()) {
             Label label = new Label(setting.getSettingName());
-            label.setWidth("20%");
+            label.setWidth("50%");
             settingsGrid.addComponent(label, 0, row);
 
             TextField textField = new TextField();
             textField.setValue(config.getSetting(setting));
-            textField.setWidth("20%");
+            textField.setWidth("50%");
             textField.markAsDirty();
             settingsGrid.addComponent(textField, 1, row);
             row++;
@@ -142,49 +146,50 @@ public class WebEncodeUI extends UI {
         rulesTable.addValueChangeListener((Property.ValueChangeListener) event -> {
 
             verticalLayout.removeAllComponents();
-            Map<java.lang.reflect.Field, TextField> textFieldMap = new HashMap<>();
-            for (java.lang.reflect.Field field : Rule.class.getFields()) {
-                TextField textField = new TextField(field.getName().replace("_", " "));
-                textFieldMap.put(field, textField);
-                try {
-                    String val = field.get(rulesTable.getValue()).toString();
-                    textField.setValue(val.toString());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
 
-                verticalLayout.addComponent(textField);
-            }
+            Rule rule = (Rule) rulesTable.getValue();
+            if ( rule == null )
+                return;
+
+
+            TextField rueUUIDTextField = new TextField("UUID");
+            rueUUIDTextField.setValue(rule.getUUIDStr());
+            rueUUIDTextField.setEnabled(false);
+            verticalLayout.addComponent(rueUUIDTextField);
+
+
+            TextField ruleNameTextField = new TextField("Rule Name");
+            ruleNameTextField.setValue(rule.Rule_Name);
+            verticalLayout.addComponent(ruleNameTextField);
+
+
+            TextField ruleWildCardTextField = new TextField("Wildcard (RegEx)");
+            ruleWildCardTextField.setValue(rule.Wirldcard);
+            verticalLayout.addComponent(ruleWildCardTextField);
+
+            ComboBox presetSelectionComboBox = new ComboBox("Preset");
+            presetSelectionComboBox.addItems(DatabaseService.getInstance().getPresets());
+            presetSelectionComboBox.select(rule.Preset);
+            verticalLayout.addComponent(presetSelectionComboBox);
+
 
             HorizontalLayout horizontalLayout = new HorizontalLayout();
             verticalLayout.addComponent(horizontalLayout);
 
             Button saveBtn = new Button("Save");
             saveBtn.addClickListener(event1 -> {
-                if ( rulesTable.getValue() == null )
-                    return;
-
-                for (java.lang.reflect.Field field : Rule.class.getFields()) {
-                    try {
-                        field.set(rulesTable.getValue(), textFieldMap.get(field).getValue());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+                rule.Rule_Name = ruleNameTextField.getValue();
+                rule.Wirldcard = ruleWildCardTextField.getValue();
+                rule.Preset = (Preset) presetSelectionComboBox.getValue();
                 DatabaseService.getInstance().updateRule((Rule) rulesTable.getValue());
             });
             horizontalLayout.addComponent(saveBtn);
 
             Button resetBtn = new Button("Reset");
             resetBtn.addClickListener(event1 -> {
-                for (java.lang.reflect.Field field : Preset.class.getFields()) {
-                    try {
-                        String val = field.get(rulesTable.getValue()).toString();
-                        textFieldMap.get(field).setValue(val.toString());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+                ruleNameTextField.setValue(rule.Rule_Name);
+                ruleWildCardTextField.setValue(rule.Wirldcard);
+                presetSelectionComboBox.select(rule.Preset);
             });
             horizontalLayout.addComponent(resetBtn);
         });
@@ -239,48 +244,66 @@ public class WebEncodeUI extends UI {
         presetTable.addValueChangeListener((Property.ValueChangeListener) event -> {
             verticalLayout.removeAllComponents();
 
-            Map<java.lang.reflect.Field, TextField> textFieldMap = new HashMap<>();
-            for (java.lang.reflect.Field field : Preset.class.getFields()) {
-                TextField textField = new TextField(field.getName().replace("_", " "));
-                textFieldMap.put(field, textField);
-                try {
-                    String val = field.get(presetTable.getValue()).toString();
-                    textField.setValue(val.toString());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                verticalLayout.addComponent(textField);
+            Preset preset = (Preset) presetTable.getValue();
+            if (preset == null)
+                return;
+
+            TextField presetNameTextField = new TextField("Preset Name");
+            presetNameTextField.setValue(preset.Preset_Name);
+            verticalLayout.addComponent(presetNameTextField);
+
+            Table optionsTable = new Table("Options");
+            optionsTable.setImmediate(true);
+            optionsTable.setHeight("30%");
+            optionsTable.setWidth("80%");
+            optionsTable.setEditable(true);
+            optionsTable.addContainerProperty("Option", String.class, null);
+            optionsTable.addContainerProperty("Value", String.class, null);
+
+            for (PresetOption presetOption : PresetOption.values())
+            {
+                String value = preset.presetParameter.getOptionValue(presetOption);
+                if (value == null)
+                   continue;
+
+                optionsTable.addItem(new Object[]{presetOption.getUiName(), value}, presetOption);
             }
+            verticalLayout.addComponent(optionsTable);
 
             HorizontalLayout horizontalLayout = new HorizontalLayout();
             verticalLayout.addComponent(horizontalLayout);
 
             Button saveBtn = new Button("Save");
             saveBtn.addClickListener(event1 -> {
-                if ( presetTable.getValue() == null )
-                    return;
 
-                for (java.lang.reflect.Field field : Preset.class.getFields()) {
-                    try {
-                        field.set(presetTable.getValue(), textFieldMap.get(field).getValue());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                Map<String, String> map = new HashMap<>();
+                for (Object itemID : optionsTable.getItemIds()) {
+
+                    System.out.println(itemID);
+                    String[] rows = optionsTable.getItem(itemID).toString().split(" ");
+                    map.put(rows[0], rows[1]);
                 }
+
+                for(PresetOption option : PresetOption.values())
+                {
+                    String val = map.get(option.getUiName());
+                   if (val == null)
+                       continue;
+
+                   preset.presetParameter.addOption(option, val);
+                }
+
+                preset.Preset_Name = presetNameTextField.getValue();
                 DatabaseService.getInstance().updatePreset((Preset) presetTable.getValue());
+
             });
             horizontalLayout.addComponent(saveBtn);
 
             Button resetBtn = new Button("Reset");
             resetBtn.addClickListener(event1 -> {
-                for (java.lang.reflect.Field field : Preset.class.getFields()) {
-                    try {
-                        String val = field.get(presetTable.getValue()).toString();
-                        textFieldMap.get(field).setValue(val.toString());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+
+                presetNameTextField.setValue(preset.Preset_Name);
+
             });
             horizontalLayout.addComponent(resetBtn);
         });

@@ -3,6 +3,7 @@ package eu.rd9.webencode.data;
 import eu.rd9.webencode.config.Config;
 import eu.rd9.webencode.config.Settings;
 import net.bramp.ffmpeg.builder.FFmpegBuilder;
+import net.bramp.ffmpeg.builder.FFmpegOutputBuilder;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
@@ -14,7 +15,7 @@ import java.util.UUID;
 public class Preset {
 
     public String Preset_Name;
-    public String FFmpeg_Parameters;
+    public PresetParameter presetParameter = new PresetParameter();
     private UUID uuid = UUID.randomUUID();
 
     public void setUuid(String uuidStr) {
@@ -27,19 +28,29 @@ public class Preset {
 
     public FFmpegBuilder getFFpegBuilder(File inputFile) {
 
-        FFmpegBuilder old = new FFmpegBuilder()
-                .setInput(inputFile.getAbsolutePath())
-                .addOutput(Config.getInstance().getSetting(Settings.CONVERTED_FILES_OUTPUT_PATH) + "/" + FilenameUtils.removeExtension(inputFile.getName()) + "_converted.mp4")
-                .setVideoCodec("libx264")
-                .setFormat("mp4").done();
+        FFmpegBuilder fFmpegBuilder = new FFmpegBuilder();
+        fFmpegBuilder.setInput(inputFile.getAbsolutePath());
+        FFmpegOutputBuilder fFmpegOutputBuilder = fFmpegBuilder.addOutput(Config.getInstance().getSetting(Settings.CONVERTED_FILES_OUTPUT_PATH) + "/" + FilenameUtils.removeExtension(inputFile.getName()) + "_converted.mp4");
 
-        FFmpegBuilder newB = new FFmpegBuilder()
-                .setInput(inputFile.getAbsolutePath())
-                .addExtraArgs(this.FFmpeg_Parameters)
-                .addOutput(Config.getInstance().getSetting(Settings.CONVERTED_FILES_OUTPUT_PATH) + "/" + FilenameUtils.removeExtension(inputFile.getName()) + "_converted.mp4")
-                .done();
+        for (PresetOption option : PresetOption.values()) {
+            String val = this.presetParameter.getOptionValue(option);
+            if ( val == null)
+                continue;
 
-        return newB;
+            switch (option) {
+                case VIDEO_OUTPUT_FORMAT:
+                    fFmpegOutputBuilder.setFormat(val);
+                    break;
+                case VIDEO_CODEC:
+                    fFmpegOutputBuilder.setVideoCodec(val);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        fFmpegOutputBuilder.done();
+        return fFmpegBuilder;
     }
 
     @Override
