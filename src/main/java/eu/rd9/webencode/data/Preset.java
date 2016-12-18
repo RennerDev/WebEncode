@@ -26,11 +26,20 @@ public class Preset {
     }
 
     public FFmpegBuilder getFFpegBuilder(File inputFile) {
-        return new FFmpegBuilder()
+
+        FFmpegBuilder old = new FFmpegBuilder()
                 .setInput(inputFile.getAbsolutePath())
                 .addOutput(Config.getInstance().getSetting(Settings.CONVERTED_FILES_OUTPUT_PATH) + "/" + FilenameUtils.removeExtension(inputFile.getName()) + "_converted.mp4")
                 .setVideoCodec("libx264")
                 .setFormat("mp4").done();
+
+        FFmpegBuilder newB = new FFmpegBuilder()
+                .setInput(inputFile.getAbsolutePath())
+                .addExtraArgs(this.FFmpeg_Parameters)
+                .addOutput(Config.getInstance().getSetting(Settings.CONVERTED_FILES_OUTPUT_PATH) + "/" + FilenameUtils.removeExtension(inputFile.getName()) + "_converted.mp4")
+                .done();
+
+        return newB;
     }
 
     @Override
