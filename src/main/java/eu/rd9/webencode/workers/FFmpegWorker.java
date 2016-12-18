@@ -37,13 +37,15 @@ public class FFmpegWorker extends Worker {
         try {
 
             File ffmpegFile = new File(Config.getInstance().getSetting(Settings.FFMPEG_PATH) + "/bin/ffmpeg.exe");
-            if ( !ffmpegFile.exists() || !ffmpegFile.isFile())
+            if ( !ffmpegFile.exists() || !ffmpegFile.isFile()) {
+                System.err.println("Could not find ffmpeg!");
                 return;
-
+            }
             File ffprobeFile = new File(Config.getInstance().getSetting(Settings.FFMPEG_PATH) + "/bin/ffprobe.exe");
-            if ( !ffprobeFile.exists() || !ffprobeFile.isFile())
+            if ( !ffprobeFile.exists() || !ffprobeFile.isFile()) {
+             System.err.println("Could not find ffprobe!");
                 return;
-
+            }
             while (!FileHelper.isCompletelyWritten(this.inputFile))
             {
                 try {
