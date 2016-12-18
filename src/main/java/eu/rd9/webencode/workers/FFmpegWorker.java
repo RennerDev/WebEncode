@@ -3,6 +3,7 @@ package eu.rd9.webencode.workers;
 import eu.rd9.webencode.config.Config;
 import eu.rd9.webencode.config.Settings;
 import eu.rd9.webencode.data.Preset;
+import eu.rd9.webencode.util.FileHelper;
 import net.bramp.ffmpeg.FFmpeg;
 import net.bramp.ffmpeg.FFmpegExecutor;
 import net.bramp.ffmpeg.FFprobe;
@@ -10,6 +11,7 @@ import net.bramp.ffmpeg.builder.FFmpegBuilder;
 import net.bramp.ffmpeg.probe.FFmpegProbeResult;
 import net.bramp.ffmpeg.progress.Progress;
 import net.bramp.ffmpeg.progress.ProgressListener;
+import org.apache.commons.io.FileUtils;
 
 import javax.management.Notification;
 import java.io.File;
@@ -42,6 +44,16 @@ public class FFmpegWorker extends Worker {
             File ffprobeFile = new File(Config.getInstance().getSetting(Settings.FFMPEG_PATH) + "/bin/ffprobe.exe");
             if ( !ffprobeFile.exists() || !ffprobeFile.isFile())
                 return;
+
+            while (!FileHelper.isCompletelyWritten(this.inputFile))
+            {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
 
             FFmpeg ffmpeg = new FFmpeg(ffmpegFile.getAbsolutePath());
             FFprobe ffprobe = new FFprobe(ffprobeFile.getAbsolutePath());
