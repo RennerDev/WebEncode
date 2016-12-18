@@ -1,5 +1,9 @@
 package eu.rd9.webencode.workers;
 
+import eu.rd9.webencode.data.Rule;
+import eu.rd9.webencode.services.RulesService;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -29,7 +33,7 @@ public class WorkerManager extends Thread{
 
     public WorkerManager()
     {
-        this.executor = Executors.newFixedThreadPool(4);
+        this.executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
     }
 
     public WorkerManager(int tCount)
@@ -53,8 +57,8 @@ public class WorkerManager extends Thread{
         return this.workerList;
     }
 
-    public void addJob (Worker worker)
-    {
-        this.executor.submit(worker);
+    public void doWork(File file) {
+        Rule rule = RulesService.getInstance().getRuleForFile(file.getName());
+        this.startWorker(new FFmpegWorker(rule.Preset, file));
     }
 }

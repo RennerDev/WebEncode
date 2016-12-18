@@ -15,7 +15,6 @@ import eu.rd9.webencode.services.WatchFolderService;
 import eu.rd9.webencode.workers.Worker;
 import eu.rd9.webencode.workers.WorkerManager;
 import eu.rd9.webencode.workers.WorkerState;
-import eu.rd9.webencode.workers.Workers;
 
 import java.io.File;
 import java.util.*;
@@ -139,9 +138,8 @@ public class WebEncodeUI extends UI {
         rulesGrid.setColumns(rulesGrid.getColumns() + 1);
         rulesGrid.addComponent(verticalLayout, 1, 0);
 
-        for (Rule rule : DatabaseService.getInstance().getRules())
-        {
-            rulesTable.addItem(new Object[]{rule,rule.Preset}, rule);
+        for (Rule rule : DatabaseService.getInstance().getRules()) {
+            rulesTable.addItem(new Object[]{rule, rule.Preset}, rule);
         }
 
 
@@ -149,8 +147,7 @@ public class WebEncodeUI extends UI {
 
             verticalLayout.removeAllComponents();
 
-            for(java.lang.reflect.Field field : Rule.class.getFields())
-            {
+            for (java.lang.reflect.Field field : Rule.class.getFields()) {
                 TextField textField = new TextField(field.getName().replace("_", " "));
                 try {
                     String val = field.get(rulesTable.getValue()).toString();
@@ -180,8 +177,7 @@ public class WebEncodeUI extends UI {
         presetsGrid.setColumns(presetsGrid.getColumns() + 1);
         presetsGrid.addComponent(verticalLayout, 1, 0);
 
-        for ( Preset preset : DatabaseService.getInstance().getPresets())
-        {
+        for (Preset preset : DatabaseService.getInstance().getPresets()) {
             presetTable.addItem(new Object[]{preset}, preset);
         }
 
@@ -190,8 +186,7 @@ public class WebEncodeUI extends UI {
 
             verticalLayout.removeAllComponents();
 
-            for(java.lang.reflect.Field field : Preset.class.getFields())
-            {
+            for (java.lang.reflect.Field field : Preset.class.getFields()) {
                 TextField textField = new TextField(field.getName().replace("_", " "));
                 try {
                     String val = field.get(presetTable.getValue()).toString();
@@ -205,7 +200,6 @@ public class WebEncodeUI extends UI {
         });
 
 
-
     }
 
     private void setupWorkers(GridLayout workersGrid) {
@@ -214,27 +208,22 @@ public class WebEncodeUI extends UI {
         workersTable.setHeight("25%");
         workersTable.addContainerProperty("Worker", Worker.class, null);
         workersTable.addContainerProperty("State", WorkerState.class, null);
-        workersGrid.addComponent(workersTable, 0,0);
+        workersGrid.addComponent(workersTable, 0, 0);
 
-        for (Worker worker : WorkerManager.getInstance().getWorkers())
-        {
-            workersTable.addItem(new Object[]{worker, worker.state}, worker);
-        }
+        workersTable.markAsDirty();
+        new Timer().scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                workersTable.clear();
+                for (Worker worker : WorkerManager.getInstance().getWorkers()) {
+                    workersTable.addItem(new Object[]{worker, worker.state}, worker);
+                }
+                workersTable.refreshRowCache();
 
-        Button addWorkerBtn = new Button("Add Worker");
-        addWorkerBtn.addClickListener(clickEvent -> {
-            NewWorkerSub sub = new NewWorkerSub();
+            }
+        }, 1000, 1000);
 
-            // Add it to the root component
-            UI.getCurrent().addWindow(sub);
-        });
 
-        workersGrid.setRows(workersGrid.getRows() + 1);
-        workersGrid.addComponent(addWorkerBtn, 0 ,1);
-
-        Button removeWorkerBtn = new Button("Remove Worker");
-        workersGrid.setColumns(workersGrid.getColumns() + 1);
-        workersGrid.addComponent(removeWorkerBtn, 1,1);
     }
 
     private void setupWatchFolder(GridLayout watchFolderGrid) {
@@ -285,8 +274,7 @@ public class WebEncodeUI extends UI {
         Button removeWatchFolderBtn = new Button("Remove Folder");
         removeWatchFolderBtn.addClickListener(clickEvent -> {
             WatchFolderService watchFolderService = WebEncodeUI.watchFolderServices.get(watchFolderTable.getItem(watchFolderTable.getValue()).toString());
-            if (watchFolderService != null)
-            {
+            if (watchFolderService != null) {
                 watchFolderService.wStop();
                 WebEncodeUI.watchFolderServices.remove(watchFolderService.getWatchFolderPath(), watchFolderService);
                 Page.getCurrent().reload();
@@ -341,6 +329,7 @@ public class WebEncodeUI extends UI {
             Button addBtn = new Button("Add");
             addBtn.addClickListener((Button.ClickListener) event -> {
                 String value = textField.getValue();
+                DatabaseService.getInstance().addWatchFolder(value);
                 WatchFolderService watchFolderService = new WatchFolderService(value);
                 WebEncodeUI.watchFolderServices.put(value, watchFolderService);
                 close();
@@ -385,50 +374,6 @@ public class WebEncodeUI extends UI {
 
             }
         }
-    }
-
-    class NewWorkerSub extends Window {
-        public NewWorkerSub() {
-            super("Create a new worker"); // Set window caption
-            center();
-
-            // Some basic content for the window
-            VerticalLayout content = new VerticalLayout();
-            content.setMargin(true);
-            setContent(content);
-
-            // Disable the close button
-            setClosable(false);
-
-            ComboBox comboBox = new ComboBox("Worker Type");
-            for (Workers worker : Workers.values()) {
-                comboBox.addItem(worker.getWorker());
-            }
-            content.addComponent(comboBox);
-
-
-            HorizontalLayout horizontalLayout = new HorizontalLayout();
-            content.addComponent(horizontalLayout);
-
-
-
-
-            Button addBtn = new Button("Add");
-            addBtn.addClickListener((Button.ClickListener) event -> {
-                WorkerManager.getInstance().startWorker((Worker) comboBox.getValue());
-                close();
-                Page.getCurrent().reload();
-            });
-
-            Button closeBtn = new Button("Close");
-            closeBtn.addClickListener((Button.ClickListener) event -> {
-                close(); // Close the sub-window
-            });
-
-            horizontalLayout.addComponent(addBtn);
-            horizontalLayout.addComponent(closeBtn);
-        }
-
     }
 
 }

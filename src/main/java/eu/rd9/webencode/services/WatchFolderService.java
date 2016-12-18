@@ -1,5 +1,8 @@
 package eu.rd9.webencode.services;
 
+import eu.rd9.webencode.workers.WorkerManager;
+
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.ArrayList;
@@ -61,6 +64,14 @@ public class WatchFolderService extends Thread {
                     } else if (ENTRY_CREATE == kind) {
                         Path newPath = ((WatchEvent<Path>) watchEvent).context();
                         objects.add(newPath.toString());
+
+                        if (newPath.toString().contains("_converted"))
+                            continue;
+
+                        File file = new File(path.toString() + "/" + newPath.toString());
+                        if (file.isFile())
+                            WorkerManager.getInstance().doWork(file);
+
                     }
 
                     System.out.println(kind.toString());
@@ -78,8 +89,7 @@ public class WatchFolderService extends Thread {
         }
     }
 
-    public void wStop ()
-    {
+    public void wStop() {
         this.run = false;
         super.stop();
         super.interrupt();

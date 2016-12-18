@@ -4,7 +4,6 @@ import eu.rd9.webencode.config.Config;
 import eu.rd9.webencode.config.Settings;
 import eu.rd9.webencode.data.Preset;
 import eu.rd9.webencode.data.Rule;
-import javafx.util.Pair;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -67,6 +66,37 @@ public class DatabaseService {
         }
         return presets;
     }
+
+    public void addWatchFolder(String path) {
+        List<String> result = new ArrayList<>();
+
+        try {
+            PreparedStatement preparedStatement = this.connection.prepareStatement("INSERT INTO watch_folders (path) VALUES (?);");
+            preparedStatement.setString(1, path);
+            preparedStatement.execute();
+            preparedStatement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<String> getWatchFolders() {
+        List<String> result = new ArrayList<>();
+
+        try {
+            Statement statement = this.connection.createStatement();
+            ResultSet rs = statement.executeQuery("SELECT path FROM watch_folders");
+            while (rs.next()) {
+                result.add(rs.getString("path"));
+            }
+            rs.close();
+            statement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
 
     public List<Rule> getRules() {
         List<Rule> presets = new ArrayList<>();

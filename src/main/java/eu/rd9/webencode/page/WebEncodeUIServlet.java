@@ -3,6 +3,8 @@ package eu.rd9.webencode.page;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.VaadinServlet;
 import eu.rd9.webencode.config.Config;
+import eu.rd9.webencode.services.DatabaseService;
+import eu.rd9.webencode.services.WatchFolderService;
 import eu.rd9.webencode.workers.WorkerManager;
 
 import javax.servlet.ServletConfig;
@@ -24,5 +26,11 @@ public class WebEncodeUIServlet extends VaadinServlet {
 
         WorkerManager workerManager = new WorkerManager();
         workerManager.start();
+
+        for ( String path : DatabaseService.getInstance().getWatchFolders())
+        {
+            WebEncodeUI.watchFolderServices.put(path, new WatchFolderService(path));
+        }
+
     }
 }

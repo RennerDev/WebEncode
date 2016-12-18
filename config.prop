@@ -1,8 +1,9 @@
 #Auto-Generated
-#Sat Dec 17 00:04:25 CET 2016
+#Sun Dec 18 17:12:32 CET 2016
 mysql.password=
 mysql.port=3306
 ffmpeg.path=D\:\\FFmpeg
 mysql.server=localhost
 mysql.username=root
 mysql.db=web_encode
+converted.output.path=D\:\\test_convered

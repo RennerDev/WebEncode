@@ -10,7 +10,8 @@ public enum Settings {
     MYSQL_DATABASE("MySQL_Database", "mysql.db", "web_encode"),
     MYSQL_USERNAME("MySQL-Username", "mysql.username", "root"),
     MYSQL_PASSWORD("MySQL-Password", "mysql.password", ""),
-    FFMPEG_PATH("FFmpeg-Path", "ffmpeg.path", "");
+    FFMPEG_PATH("FFmpeg-Path", "ffmpeg.path", ""),
+    CONVERTED_FILES_OUTPUT_PATH("Output Path for converted files", "converted.output.path", "");
 
     private String settingName;
     private String propName;
