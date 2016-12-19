@@ -110,7 +110,7 @@ public class DatabaseService {
 
         try {
             Statement statement = this.connection.createStatement();
-            ResultSet rs = statement.executeQuery("SELECT r.id AS rId , r.name AS rName, r.wildcard AS rWildCard, p.id AS pId, p.name AS pName, p.ffmpegParams AS ffmpeg FROM rules r JOIN presets p ON r.preset = p.id;");
+            ResultSet rs = statement.executeQuery("SELECT r.id AS rId , r.name AS rName, r.wildcard AS rWildCard, p.id AS pId, p.name AS pName, p.ffmpegParams AS ffmpegParams FROM rules r JOIN presets p ON r.preset = p.id;");
             while (rs.next()) {
 
                 Preset preset = new Preset();
