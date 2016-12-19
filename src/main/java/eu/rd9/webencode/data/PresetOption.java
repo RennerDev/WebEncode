@@ -5,6 +5,7 @@ package eu.rd9.webencode.data;
  */
 public enum PresetOption {
 
+    VIDEO_OUTPUT_BITRATE ("Video-Bitrate", "300000"),
     VIDEO_OUTPUT_FORMAT ( "Video-Format", "mp4"),
     VIDEO_CODEC("Video-Codec", "libx264");
 

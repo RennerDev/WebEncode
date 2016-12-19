@@ -38,6 +38,9 @@ public class Preset {
                 continue;
 
             switch (option) {
+                case VIDEO_OUTPUT_BITRATE:
+                    fFmpegOutputBuilder.setVideoBitRate(Long.parseLong(val));
+                    break;
                 case VIDEO_OUTPUT_FORMAT:
                     fFmpegOutputBuilder.setFormat(val);
                     break;
@@ -48,7 +51,6 @@ public class Preset {
                     break;
             }
         }
-
         fFmpegOutputBuilder.done();
         return fFmpegBuilder;
     }
