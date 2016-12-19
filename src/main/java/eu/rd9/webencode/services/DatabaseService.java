@@ -120,7 +120,7 @@ public class DatabaseService {
                     preset.presetParameter = (PresetParameter) ObjectHelper.fromString(rs.getString("ffmpegParams"));
                 } catch (Exception e)
                 {
-                    System.out.println("Could not get preset parameters from db! Creating default one...");
+                    System.out.println("Could not get preset parameters for " + preset.Preset_Name + " from db! Creating default one...");
                     preset.presetParameter = new PresetParameter();
                 }
 

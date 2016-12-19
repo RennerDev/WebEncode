@@ -87,7 +87,7 @@
         <entry file="file://$PROJECT_DIR$/src/main/java/eu/rd9/webencode/services/DatabaseService.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="341">
-              <caret line="122" column="104" lean-forward="false" selection-start-line="122" selection-start-column="104" selection-end-line="122" selection-end-column="104" />
+              <caret line="122" column="56" lean-forward="true" selection-start-line="122" selection-start-column="56" selection-end-line="122" selection-end-column="56" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -1294,7 +1294,7 @@
     <entry file="file://$PROJECT_DIR$/src/main/java/eu/rd9/webencode/services/DatabaseService.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="341">
-          <caret line="122" column="104" lean-forward="false" selection-start-line="122" selection-start-column="104" selection-end-line="122" selection-end-column="104" />
+          <caret line="122" column="56" lean-forward="true" selection-start-line="122" selection-start-column="56" selection-end-line="122" selection-end-column="56" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
