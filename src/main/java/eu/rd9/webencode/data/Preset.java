@@ -34,17 +34,20 @@ public class Preset {
 
         for (PresetOption option : PresetOption.values()) {
             String val = this.presetParameter.getOptionValue(option);
-            if ( val == null)
+            if (val == null)
                 continue;
 
             switch (option) {
                 case VIDEO_OUTPUT_BITRATE:
+                    System.out.println("Set " + option.toString() + " to " + val);
                     fFmpegOutputBuilder.setVideoBitRate(Long.parseLong(val));
                     break;
                 case VIDEO_OUTPUT_FORMAT:
+                    System.out.println("Set " + option.toString() + " to " + val);
                     fFmpegOutputBuilder.setFormat(val);
                     break;
                 case VIDEO_CODEC:
+                    System.out.println("Set " + option.toString() + " to " + val);
                     fFmpegOutputBuilder.setVideoCodec(val);
                     break;
                 default:
