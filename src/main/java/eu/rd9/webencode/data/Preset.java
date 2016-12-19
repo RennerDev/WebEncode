@@ -34,8 +34,10 @@ public class Preset {
 
         for (PresetOption option : PresetOption.values()) {
             String val = this.presetParameter.getOptionValue(option);
-            if (val == null)
+            if (val == null) {
+             System.out.println(option + " is null!");
                 continue;
+            }
 
             switch (option) {
                 case VIDEO_OUTPUT_BITRATE:
