@@ -122,6 +122,7 @@ public class DatabaseService {
                 {
                     System.out.println("Could not get preset parameters for " + preset.Preset_Name + " from db! Creating default one...");
                     preset.presetParameter = new PresetParameter();
+                    e.printStackTrace();
                 }
 
                 Rule rule = new Rule();
