@@ -1,6 +1,10 @@
 WebEncode
 ==============
 [![Build Status](https://travis-ci.org/RennerDev/WebEncode.svg?branch=master)](https://travis-ci.org/RennerDev/WebEncode)
+[![Code Climate](https://codeclimate.com/github/RennerDev/WebEncode/badges/gpa.svg)](https://codeclimate.com/github/RennerDev/WebEncode)
+[![Test Coverage](https://codeclimate.com/github/RennerDev/WebEncode/badges/coverage.svg)](https://codeclimate.com/github/RennerDev/WebEncode/coverage)
+[![Issue Count](https://codeclimate.com/github/RennerDev/WebEncode/badges/issue_count.svg)](https://codeclimate.com/github/RennerDev/WebEncode)
+
 
 Workflow
 ========
