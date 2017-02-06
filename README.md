@@ -1,6 +1,6 @@
 WebEncode
 ==============
-
+[![Build Status](https://travis-ci.org/RennerDev/WebEncode.svg?branch=master)](https://travis-ci.org/RennerDev/WebEncode)
 
 Workflow
 ========
